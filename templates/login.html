@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+	<link href="../static/img/Acorn.png" rel="icon">
+    
+    <!-- Link to CSS -->
+    <link rel="stylesheet" href="../static/css/login.css">
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+<div class="container" id="container">
+
+	<div class="form-container sign-in-container">
+
+		<form id = "sign-in-form" action="/signin" method="POST">
+			<h1>Sign in</h1>
+            <br>
+			<input type="email" name="email" placeholder="Email" required/>
+			<input type="password" name="password" placeholder="Password" required/>
+            <br>
+			<button type="submit">Sign In</button>
+		</form>
+
+	</div>
+
+	<div class="overlay-container">
+
+		<div class="overlay">
+
+			<div class="overlay-panel overlay-left">
+				<h1>Welcome Back!</h1>
+				<p>To keep connected with us please login with your personal info</p>
+				<button class="ghost" id="signIn">Sign In</button>
+			</div>
+
+			<div class="overlay-panel overlay-right">
+				<h1>Hello!</h1>
+				<p>Welcome to Acorn Claims System </p>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<style>
+    .popup-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #DC143C;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 1000;
+    animation: fadein 0.3s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; top: 10px; }
+    to { opacity: 1; top: 20px; }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; top: 20px; }
+    to { opacity: 0; top: 10px; }
+}
+
+</style>
+
+<script>
+    document.getElementById("sign-in-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        let form = event.target;
+        let formData = new FormData(form);
+        fetch("/signin", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                showPopup(data.error);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+    // Popup messages
+    function showPopup(message) {
+        let popup = document.createElement("div");
+        popup.classList.add("popup-message");
+        popup.textContent = message;
+        document.body.appendChild(popup);
+        setTimeout(() => {
+            popup.remove();
+        }, 5000);
+    }
+</script>
+</body>
+</html>

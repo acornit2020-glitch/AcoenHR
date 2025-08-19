@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Acorn HR </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="../static/img/Acorn.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../static/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid position-relative bg-white d-flex p-0">
+
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+
+            <nav class="navbar bg-light navbar-light">
+
+                <a href="admin.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary">Acorn HR</h3>
+                </a>
+
+                <div class="d-flex align-items-center ms-4 mb-4">
+
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="..\static\img\user.png" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+
+                    <div class="ms-3">
+                        <h6 class="mb-0">Acorn HR</h6>
+                        <span>{{ admin_name}}</span>
+                    </div>
+
+                </div>
+
+                <div class="navbar-nav w-100">
+                    <a href="/dashboard" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="/claim_requests" class="nav-item nav-link"><i class="fa fa-eye me-2"></i>Claim Requests</a>
+                    <a href="/recent_requests" class="nav-item nav-link"><i class="fa fa-history"></i>Recent Requests</a>
+                    <a href="/generate_report" class="nav-item nav-link"><i class="fa fa-file-alt"></i>Generate Reports</a>
+                </div>
+
+            </nav>
+
+        </div>
+        <!-- Sidebar End -->
+
+
+        <!-- Content Start -->
+        <div class="content">
+
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+
+                <a href="admin.html" class="navbar-brand d-flex d-lg-none me-4">
+                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+                </a>
+
+                <a href="#" class="sidebar-toggler flex-shrink-0">
+                    <i class="fa fa-bars"></i>
+                </a>
+
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" placeholder="Search">
+                </form>
+
+                <div class="navbar-nav align-items-center ms-auto">
+
+                    <div class="nav-item dropdown">
+
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fa fa-bell me-lg-2"></i>
+                            <span class="d-none d-lg-inline-flex">Notifications</span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">Profile updated</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+
+                            <hr class="dropdown-divider">
+
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">New user added</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+
+                            <hr class="dropdown-divider">
+
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">Password changed</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+
+                            <hr class="dropdown-divider">
+
+                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="nav-item dropdown">
+
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img class="rounded-circle me-lg-2" src="..\static\img\user.png" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex">{{ email }}</span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">My Profile</a>
+                            <a href="#" class="dropdown-item">Settings</a>
+                            <a href="/logout" class="dropdown-item">Log Out</a>
+                        </div>
+
+                    </div>
+
+                </div>
+                
+            </nav>
+            <!-- Navbar End -->
+
+
+            <!-- Sale & Revenue Start -->
+            <div class="container-fluid pt-4 px-4">
+
+                <div class="row g-4">
+
+                    <div class="col-sm-6 col-xl-3">
+
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-users fa-3x text-primary me-2"></i>
+
+                            <div class="ms-3">
+                                <p class="mb-2" >Employees : {{ count }}</p>
+                                <h6 class="mb-0" id="employee-count">{{ count }}</h6>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Sale & Revenue End -->
+
+            <!-- Table Start -->
+            <div class="container-fluid pt-4 px-4">
+
+                <div class="row g-4">
+
+                    <form method="POST" action="{{ url_for('stationary') }}">
+
+                        <select name="month" class="form-select form-select-sm mb-3" aria-label=".form-select-sm example">
+                            <option value="1" {% if selected_month == 1 %}selected{% endif %}>January</option>
+                            <option value="2" {% if selected_month == 2 %}selected{% endif %}>February</option>
+                            <option value="3" {% if selected_month == 3 %}selected{% endif %}>March</option>
+                            <option value="4" {% if selected_month == 4 %}selected{% endif %}>April</option>
+                            <option value="5" {% if selected_month == 5 %}selected{% endif %}>May</option>
+                            <option value="6" {% if selected_month == 6 %}selected{% endif %}>June</option>
+                            <option value="7" {% if selected_month == 7 %}selected{% endif %}>July</option>
+                            <option value="8" {% if selected_month == 8 %}selected{% endif %}>August</option>
+                            <option value="9" {% if selected_month == 9 %}selected{% endif %}>September</option>
+                            <option value="10" {% if selected_month == 10 %}selected{% endif %}>October</option>
+                            <option value="11" {% if selected_month == 11 %}selected{% endif %}>November</option>
+                            <option value="12" {% if selected_month == 12 %}selected{% endif %}>December</option>
+                        </select>
+
+                        <select name="year" class="form-select form-select-sm mb-3" aria-label=".form-select-sm example">
+                            <option value="2025" {% if selected_year == 2025 %}selected{% endif %}>2025</option>
+                            <option value="2024" {% if selected_year == 2024 %}selected{% endif %}>2024</option>
+                        </select>
+
+                        <button type="show" class="btn btn-sm btn-primary mt-2" >Show Claims</button>
+
+                    </form>
+
+                    <div class="table-responsive">
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <!-- Table to Display Claims -->
+                            {% if employee_claims %}
+                                <table class="table" id="table">
+
+                                    <div class="col-12">
+                                        <input type="text" id="search" class="form-control" placeholder="Search by Employee ID" onkeyup="searchEmployee()">
+                                    </div>
+
+                                    <thead>
+                                        <tr>
+                                            <th>Employee ID</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Total Stationary</th>
+                                            <th>Date of Request</th>
+                                            <th>Date of Approval</th>
+                                            <th>Approved Admin</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for claim in employee_claims %}
+                                            <tr>
+                                                <td>{{ claim[0]}}</td>
+                                                <td>{{ claim[1]}}</td>
+                                                <td>{{ claim[2]}}</td>
+                                                <td>{{ claim[3]}} LKR</td>
+                                                <td>{{ claim[4]}}</td>
+                                                <td>{{ claim[5]}}</td>
+                                                <td>{{ claim[6]}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+
+                                </table>
+
+                            {% else %}
+                                <p>No claims found for the selected month and year.</p>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Table End -->
+
+
+            <!-- Sales Chart Start -->
+            <div class="container-fluid pt-4 px-4">
+
+                <div class="row g-4">
+
+                    <div class="col-sm-12 col-xl-6">
+
+                        <div class="bg-light rounded h-100 p-4" style="width: 350px; height: 350px;">
+                            <h6 class="mb-4">Days in Current Month</h6>
+                            <canvas id="doughnut-chart"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <!-- Content End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="../static/js/main.js"></script>
+    <script src="../static/js/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="utf-8">
+    <title>Acorn HR - Claim Report</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="../static/img/Acorn.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Stylesheet -->
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .report-container {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            font-weight: bold;
+            color: #333;
+            margin: 15px 0 10px 0;
+            font-size: 24px;
+        }
+
+        .report-header .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .report-header .date {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .report-info {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .report-info h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: normal;
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .claims-summary {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .claims-summary h4 {
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .claim-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .claim-item:last-child {
+            border-bottom: 2px solid #333;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+            padding: 15px 0;
+        }
+
+        .action-buttons {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+
+        .btn-custom {
+            margin: 0 5px;
+            padding: 10px 20px;
+            border: 1px solid #333;
+            background: #ffffff;
+            color: #333;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: normal;
+        }
+
+        .btn-custom:hover {
+            background: #333;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .report-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .info-value {
+                margin-top: 5px;
+            }
+
+            .btn-custom {
+                display: block;
+                margin: 5px 0;
+                text-align: center;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="report-container">
+
+                    <!-- Header -->
+                    <div class="report-header">
+                        <img src="../static/img/Acorn.png" alt="Acorn Logo" class="logo">
+                        <h1>Claim Report</h1>
+                        <p class="date">Generated on {{ current_date }}</p>
+                    </div>
+
+                    <!-- Report Information -->
+                    <div class="report-info">
+                        <h5>Report Details</h5>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Report Period:</span>
+                            <span class="info-value">{{ start_date }} to {{ end_date }}</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Report Type:</span>
+                            <span class="info-value">
+                                {% if employee_id %}
+                                    Individual Employee Report
+                                {% else %}
+                                    Overall Company Report
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        {% if employee_id %}
+                        <div class="info-row">
+                            <span class="info-label">Employee ID:</span>
+                            <span class="info-value">{{ employee_display_id }}</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Employee Name:</span>
+                            <span class="info-value">{{ employee_name }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Claims Summary -->
+                    <div class="claims-summary">
+                        <h4>Claims Summary</h4>
+                        
+                        <div class="claim-item">
+                            <span>Fuel Claims:</span>
+                            <span>{{ "LKR {:,.2f}".format(fuel_total) }}</span>
+                        </div>
+                        
+                        <div class="claim-item">
+                            <span>OPD Claims:</span>
+                            <span>{{ "LKR {:,.2f}".format(opd_total) }}</span>
+                        </div>
+                        
+                        <div class="claim-item">
+                            <span>Total Claims:</span>
+                            <span>{{ "LKR {:,.2f}".format(total_claims) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="{{ url_for('download_pdf', start_date=start_date, end_date=end_date, employee_id=employee_id) }}" 
+                           class="btn-custom">
+                            Download PDF
+                        </a>
+                        
+                        <a href="{{ url_for('download_excel', start_date=start_date, end_date=end_date, employee_id=employee_id) }}" 
+                           class="btn-custom">
+                            Download Excel
+                        </a>
+                        
+                        <a href="javascript:history.back()" class="btn-custom">
+                            Back
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

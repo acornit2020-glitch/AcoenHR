@@ -1,0 +1,9 @@
+# Minimal requirements without pandas/numpy (Excel export disabled)
+Flask==2.3.3
+Werkzeug==2.3.7
+gunicorn==21.2.0
+mysql-connector-python==8.1.0
+fpdf2==2.7.6
+Pillow==10.3.0
+imagehash==4.3.1
+python-dotenv==1.0.0

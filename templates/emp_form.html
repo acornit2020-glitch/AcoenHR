@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Acorn HR</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="../static/img/Acorn.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../static/css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-light navbar-light">
+            <a href="/emp_dashboard" class="navbar-brand mx-4 mb-3">
+                <img src="../static/img/Acorn.png" alt="Acorn HR Logo" class="logo" style="height: 60px;">
+            </a>
+
+            <div class="d-flex align-items-center ms-4 mb-4">
+
+                <div class="position-relative">
+                    <img class="rounded-circle" src="../static/img/user.png" alt="" style="width: 40px; height: 40px;">
+                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                </div>
+
+                <div class="ms-3">
+                    <h6 class="mb-0">Employee</h6>
+                    <span>{{ emp_name }}</span>
+                </div>
+
+            </div>
+
+            <div class="navbar-nav w-100">
+                <a href="/emp_dashboard" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                <a href="/emp_form" class="nav-item nav-link active"><i class="fa fa-paper-plane me-2"></i>Claim Request</a>
+            </div>
+
+            <!-- Dashboard -->
+            <a href="/emp_dashboard" class="btn btn-primary d-md-none position-fixed" style="top: 15px; left: 15px; z-index: 1100;">
+                <i class="fa fa-tachometer-alt"></i> Dashboard
+            </a>
+
+
+            <!-- Logout Button at the Bottom -->
+            <div class="navbar-nav w-100 mt-auto">
+                <div style="height: 331px;"></div>
+                <hr class="my-2">
+                <a href="/logout" class="nav-item nav-link" style="font-size: 14px;">
+                    <i class="fa fa-sign-out-alt text-danger me-2" style="font-size: 12px;"></i> Log Out
+                </a>
+            </div>
+
+        </nav>
+
+    </div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+
+        <!-- Credit Balances -->
+        <div class="container-fluid pt-4 px-4">
+
+            <div class="row g-4">
+
+                <div class="col-md-4 col-lg-4">
+
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center p-4 h-100">
+                        <i class="fa fa-medkit fa-3x text-primary mb-3"></i>
+                        <p class="mb-1 fw-bold">OPD Credit Balance</p>
+                        <h6 class="mb-0">{{ opd_credit_balance }} LKR</h6>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 col-lg-4">
+
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center p-4 h-100">
+                        <i class="fa fa-gas-pump fa-3x text-primary mb-3"></i>
+                        <p class="mb-1 fw-bold">Fuel Credit Balance</p>
+                        <h6 class="mb-0">{{ fuel_credit_balance }} LKR</h6>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 col-lg-4">
+
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center p-4 h-100">
+                        <i class="fa fa-book fa-3x text-primary mb-3"></i>
+                        <p class="mb-1 fw-bold">Stationary Credit Balance</p>
+                        <h6 class="mb-0">Unlimited</h6>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    <!-- Form Start -->
+    <div class="container-fluid pt-4 px-4">
+
+        <div class="row justify-content-center">
+
+            <div class="col-sm-12 col-xl-6">
+
+                <div class="bg-light rounded h-100 p-4">
+                    <h4 class="text-center mb-4">Claim Request Form</h4>
+                    <h6 class="mb-4">Select Category</h6>
+                    <form action="/emp_form" method="POST" enctype="multipart/form-data">
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="category" value="OPD" id="opdRadio">
+                            <label for="opdRadio">OPD</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="category" value="Fuel" id="fuelRadio">
+                            <label for="fuelRadio">Fuel</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="category" value="Stationary" id="stationaryRadio" disabled>
+                            <label for="stationaryRadio">Stationary</label>
+                        </div>
+
+                        <br/>
+                        <p id="enable-message" style="color: red; font-weight: bold; display: none;"></p>
+
+                        <div id="claim-request-form" class="d-none">
+                            <h6 class="mb-4" id="form-title">Request Details</h6>
+
+                            <div class="mb-3">
+                                <label for="images">Upload Images</label>
+                                <input type="file" id="images" name="images[]" class="form-control" multiple required>
+                                <small>*You can upload multiple images</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount</label>
+                                <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter Claim Amount" required>
+                            </div>                         
+
+                            <div class="mb-3">
+                                <label class="form-label" for="message">Message</label>
+                                <textarea placeholder="Enter your message to Acorn HR" class="form-control" id="message" name="message" rows="3"></textarea>
+                            </div> 
+
+                            <button type="submit" class="btn btn-primary w-100">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+        
+    </div>
+
+</div>
+
+<style>
+    .popup-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #cd4132;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 9999; /* Ensure it's on top */
+    animation: fadein 0.3s;
+}
+
+@keyframes fadein {
+    from { top: 0; opacity: 0; }
+    to { top: 20px; opacity: 1; }
+}
+
+@keyframes fadeout {
+    from { top: 20px; opacity: 1; }
+    to { top: 0; opacity: 0; }
+}
+
+.popup-message-success {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #078117;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: fadein 0.3s;
+    }
+</style>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body" id="errorMessage">
+                <!-- Error message will be inserted here dynamically -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- Template Javascript -->
+<script src="../static/js/main.js"></script>
+
+<!-- Custom JS for conditional form visibility -->
+<script>
+    $(document).ready(function () 
+    {
+        // listen for changes in radio button selection
+        $('input[type="radio"][name="category"]').change(function () 
+        {
+            // show the form
+            $('#claim-request-form').removeClass('d-none');
+
+            // get the selected category
+            var selectedCategory = $('input[type="radio"][name="category"]:checked').val();
+
+            // update the form title and input visibility based on the selected category
+            if (selectedCategory === 'opd') 
+            {
+                $('#form-title').text('OPD Details');
+                $('#available-credits').closest('.mb-3').removeClass('d-none');
+            } 
+            else if (selectedCategory === 'fuel') 
+            {
+                $('#form-title').text('Fuel Details');
+                $('#available-credits').closest('.mb-3').removeClass('d-none');
+            } 
+            else if (selectedCategory === 'stationary') 
+            {
+                $('#form-title').text('Stationary Details');
+                $('#available-credits').closest('.mb-3').addClass('d-none');
+            }
+
+            // validate the "Amount" field for numeric input
+            $('#amount').on('input', function () 
+            {
+                // get the current value of the input
+                var inputVal = $(this).val(); 
+                // regex for numeric values (including decimals)
+                var isNumeric = /^[0-9]*\.?[0-9]+$/.test(inputVal);
+
+                if (!isNumeric && inputVal !== '') 
+                {
+                    // add red border for invalid input
+                    $(this).css('border-color', 'red'); 
+                } 
+                else 
+                {
+                    // reset to default border color for valid input
+                    $(this).css('border-color', '');
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () 
+    {
+        // listen for changes in radio button selection
+        $('input[type="radio"][name="category"]').change(function () 
+        {
+            $('#claim-request-form').removeClass('d-none');
+
+            var selectedCategory = $('input[type="radio"][name="category"]:checked').val();
+
+            if (selectedCategory === 'OPD') 
+            {
+                $('#form-title').text('OPD Details');
+                $('#available-credits').closest('.mb-3').removeClass('d-none');
+            } 
+            else if (selectedCategory === 'Fuel') 
+            {
+                $('#form-title').text('Fuel Details');
+                $('#available-credits').closest('.mb-3').removeClass('d-none');
+            } 
+            else if (selectedCategory === 'Stationary') 
+            {
+                $('#form-title').text('Stationary Details');
+                $('#available-credits').closest('.mb-3').addClass('d-none');
+            }
+
+            $('#amount').on('input', function () 
+            {
+                var inputVal = $(this).val();
+                var isNumeric = /^[0-9]*\.?[0-9]+$/.test(inputVal);
+
+                if (!isNumeric && inputVal !== '') 
+                {
+                    $(this).css('border-color', 'red');
+                } 
+                else 
+                {
+                    $(this).css('border-color', '');
+                }
+            });
+        });
+    });
+
+
+    // submit
+    $('form').on('submit', function (e) 
+    {
+    // prevent default form submission
+    e.preventDefault(); 
+
+    // initialize formData, 'this' refers to the form element
+    var formData = new FormData(this); 
+
+    // send the form data using fetch
+    fetch('/emp_form', 
+    {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => 
+    {
+        if (data.error) 
+        {
+            // show the error message in a pop-up
+            showPopup(data.error);
+        } 
+        else 
+        {
+            actionSuccess(data.success);
+
+            // redirect to dashboard on success
+            setTimeout(() => {
+                window.location.href = '/emp_dashboard';
+            }, 5000);
+        }
+    })
+    .catch(error => {
+        showPopup(error.message);
+    });
+});
+
+// popup messages for errors
+function showPopup(message) 
+{
+    let popup = document.createElement("div");
+    popup.classList.add("popup-message");
+    popup.textContent = message;
+
+    document.body.appendChild(popup);
+
+    setTimeout(() => 
+    {
+        popup.remove();
+    }, 5000);
+}
+
+// popup messages for success
+function actionSuccess(message) {
+        let popup = document.createElement("div");
+        popup.classList.add("popup-message-success");
+        popup.textContent = message;
+
+        document.body.appendChild(popup);
+
+        setTimeout(() => {
+            popup.remove();
+        }, 5000);
+    }
+
+$(document).ready(function () 
+    {
+    let today = new Date();
+    let day = today.getDate();
+    let enableDate = `10`;
+
+    if (day >= 5 && day <= 10) 
+    {
+        $('input[type="radio"][name="category"]').prop('disabled', true);
+        $('#enable-message').html(`This form will be enabled by <strong>${enableDate}th of this month</strong>.`).show();
+    } 
+    else 
+    {
+        $('#enable-message').hide();
+    }
+    });
+
+// listen for changes in radio button selection
+$('input[type="radio"][name="category"]').change(function () 
+{
+    $('#claim-request-form').removeClass('d-none');
+
+    var selectedCategory = $('input[type="radio"][name="category"]:checked').val();
+
+    if (selectedCategory === 'OPD') 
+    {
+        $('#form-title').text('OPD Details');
+    }
+    else if (selectedCategory === 'Fuel') 
+    {
+        $('#form-title').text('Fuel Details');
+    } 
+    else if (selectedCategory === 'Stationary') 
+    {
+        $('#form-title').text('Stationary Details');
+    }
+});
+
+// Image preview functionality (without OCR processing)
+document.getElementById("images").addEventListener("change", function(event) 
+{
+    let files = event.target.files;
+    
+    if (files.length > 0) 
+    {
+        console.log(`${files.length} image(s) selected for upload`);
+        // You can add image preview functionality here if needed
+        // For now, we just acknowledge the file selection
+    }
+});
+
+</script>
+</body>
+</html>

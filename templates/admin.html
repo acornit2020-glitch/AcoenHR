@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Acorn HR/Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="../static/img/Acorn.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* Ensure the pie chart is smaller */
+        #claimsBreakdownChart {
+            max-width: 300px;
+            max-height: 300px;
+            margin: auto;
+        }
+
+        /* Make the cards neatly aligned */
+        .row.g-4 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .col-sm-6.col-xl-3 {
+            flex: 1 0 23%;
+            margin: 10px;
+        }
+
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Smooth curve for the line chart */
+        #monthlyClaimsTrendChart {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* Ensuring that the dropdown menu appears well */
+        .dropdown-menu {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid position-relative bg-white d-flex p-0">
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-light navbar-light">
+                <a href="/dashboard" class="navbar-brand mx-4 mb-3">
+                    <img src="../static/img/Acorn.png" alt="Acorn HR Logo" class="logo" style="height: 60px;">
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="../static/img/user.png" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">Admin</h6>
+                        <span>{{ admin_name }}</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="/dashboard" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="/claim_requests" class="nav-item nav-link"><i class="fa fa-eye me-2"></i>Claim Requests</a>
+                    <a href="/recent_requests" class="nav-item nav-link"><i class="fa fa-history me-2"></i>Recent Requests</a>
+                    <a href="/admin_form" class="nav-item nav-link"><i class="fa fa-user-plus me-2"></i>Create Employee</a>
+                    <a href="/emp_details" class="nav-item nav-link"><i class="fa fa-id-card me-2"></i>Edit Credits</a>
+                    <a href="/emp_update" class="nav-item nav-link"><i class="fa fa-user-edit me-2"></i>Update Employee</a>
+                    <a href="/generate_report" class="nav-item nav-link"><i class="fa fa-file-alt me-2"></i>Generate Reports</a>
+                </div>
+                <!-- Logout Button at the Bottom -->
+                <div class="navbar-nav w-100 mt-auto">
+                    <div style="height: 61px;"></div>
+                    <hr class="my-2"> <!-- Optional: Add a divider -->
+                    <a href="/logout" class="nav-item nav-link" style="font-size: 14px;">
+                        <i class="fa fa-sign-out-alt text-danger me-2" style="font-size: 12px;"></i> Log Out
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
+        <!-- Content Start -->
+        <div class="content">
+
+            <!-- Dashboard Content Start -->
+            <div class="container-fluid pt-4 px-4">
+                <!-- Key Metrics Cards -->
+                <div class="container-fluid pt-2 px-1"> <!-- Changed pt-4 to pt-2 -->
+                    <div class="row g-4">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="bg-light rounded d-flex align-items-center justify-content-start p-4">
+                                <i class="fa fa-users fa-3x text-primary me-3"></i>
+                                <div>
+                                    <p class="mb-2">Total Employees</p>
+                                    <h6 class="mb-0">{{ employee_count }}</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="bg-light rounded d-flex align-items-center justify-content-start p-4">
+                                <i class="fa fa-calendar-day fa-3x text-primary me-3"></i>
+                                <div>
+                                    <p class="mb-2">Today Claims</p>
+                                    <h6 class="mb-0">{{ today_claims }} LKR</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="bg-light rounded d-flex align-items-center justify-content-start p-4">
+                                <i class="fa fa-chart-bar fa-3x text-primary me-3"></i>
+                                <div>
+                                    <p class="mb-2">This Month Claims</p>
+                                    <h6 class="mb-0">{{ monthly_claims }} LKR</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="bg-light rounded d-flex align-items-center justify-content-start p-4">
+                                <i class="fa fa-wallet fa-3x text-primary me-3"></i>
+                                <div>
+                                    <p class="mb-2">This Year Claims</p>
+                                    <h6 class="mb-0">{{ year_claims }} LKR</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Charts and Insights -->
+                <div class="row g-4 mt-2">
+                    <!-- Claims Breakdown Chart -->
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Claims Breakdown ({{ selected_month }}/{{ selected_year }})</h6>
+                            <canvas id="claimsBreakdownChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Claims Trend Chart -->
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Monthly Claims Trend</h6>
+                            <canvas id="monthlyClaimsTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claims Report Table -->
+                <div class="row g-4 mt-2">
+                    <div class="col-12">
+                        <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Claims Report ({{ selected_month }}/{{ selected_year }})</h6>
+                            <form method="POST" action="{{ url_for('dashboard') }}" class="mb-3">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <select name="month" class="form-select">
+                                            {% for month in range(1, 13) %}
+                                                <option value="{{ month }}" {% if selected_month == month %}selected{% endif %}>{{ month }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select name="year" class="form-select">
+                                            {% for year in range(2025, 2036) %}
+                                                <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>{{ year }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <button type="submit" name="download" class="btn btn-success">Download PDF</button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" name="download_excel" class="btn btn-success">Download Excel</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Fuel Claims (LKR)</th>
+                                            <th>OPD Claims (LKR)</th>
+                                            <th>Total Claims (LKR)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for claim in employee_claims %}
+                                            <tr>
+                                                <td>{{ claim[0] }}</td>
+                                                <td>{{ claim[1] }} {{ claim[2] }}</td>
+                                                <td>{{ claim[3] }}</td>
+                                                <td>{{ claim[4] }}</td>
+                                                <td>{{ claim[5] }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dashboard Content End -->
+        </div>
+        <!-- Content End -->
+    </div>
+
+    <!-- JavaScript for Charts -->
+    <script>
+        // Claims Breakdown Chart
+        const claimsBreakdownCtx = document.getElementById('claimsBreakdownChart').getContext('2d');
+        const claimsBreakdownChart = new Chart(claimsBreakdownCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Fuel', 'OPD'],
+                datasets: [{
+                    data: {{ [fuel_claims, opd_claims, stationary_claims] | tojson }},
+                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Claims Breakdown' }
+                }
+            }
+        });
+
+        // Monthly Claims Trend Chart
+        const monthlyClaimsTrendCtx = document.getElementById('monthlyClaimsTrendChart').getContext('2d');
+        const monthlyClaimsTrendChart = new Chart(monthlyClaimsTrendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'Total Claims',
+                        data: {{ monthly_trend_data.total | tojson }},
+                        borderColor: '#36A2EB',
+                        fill: false,
+                        tension: 0.4,
+                    },
+                    {
+                        label: 'Fuel Claims',
+                        data: {{ monthly_trend_data.fuel | tojson }},
+                        borderColor: '#FF6384',
+                        fill: false,
+                        tension: 0.4,
+                    },
+                    {
+                        label: 'OPD Claims',
+                        data: {{ monthly_trend_data.opd | tojson }},
+                        borderColor: '#FFCE56',
+                        fill: false,
+                        tension: 0.4,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Monthly Claims Trend' }
+                }
+            }
+        });
+    </script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

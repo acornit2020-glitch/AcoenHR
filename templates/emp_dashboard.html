@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Acorn HR </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="../static/img/Acorn.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../static/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">  
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3" id="sidebarMenu">
+        <nav class="navbar bg-light navbar-light">
+            <a href="/emp_dashboard" class="navbar-brand mx-4 mb-3">
+                <img src="../static/img/Acorn.png" alt="Acorn Logo" class="logo" style="height: 60px;">
+            </a>
+
+            <div class="d-flex align-items-center ms-4 mb-4">
+
+                <div class="position-relative">
+                    <img class="rounded-circle" src="../static/img/user.png" alt="" style="width: 40px; height: 40px;">
+                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                </div>
+
+                <div class="ms-3">
+                    <h6 class="mb-0">Employee</h6>
+                    <span>{{ emp_name }}</span>
+                </div>
+
+            </div>
+
+            <div class="navbar-nav w-100">
+                <a href="/emp_dashboard" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                <a href="/emp_form" class="nav-item nav-link"><i class="fa fa-paper-plane me-2"></i>Claim Request</a>
+            </div>
+
+            <!-- Logout Button at the Bottom -->
+            <div class="navbar-nav w-100 mt-auto">
+                <div style="height: 331px;"></div>
+                <hr class="my-2">
+                <a href="/logout" class="nav-item nav-link" style="font-size: 14px;">
+                    <i class="fa fa-sign-out-alt text-danger me-2" style="font-size: 12px;"></i> Log Out
+                </a>
+            </div>
+        </nav>
+    </div>
+    <!-- Sidebar End -->
+
+    
+
+    <!-- Mobile Add Claim Button -->
+    <a href="/emp_form" class="btn btn-primary d-md-none position-fixed" style="top: 15px; left: 15px; z-index: 1100;">
+        <i class="fa fa-plus"></i> Add Claim
+    </a>
+
+    <!-- Content Start -->
+    <div class="content">
+        <div class="container-fluid pt-4 px-4">
+
+            <div class="row g-4">
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center p-4 h-100">
+                        <i class="fa fa-medkit fa-3x text-primary mb-3"></i>
+                        <p class="mb-1 fw-bold">OPD Credit Limit</p>
+                        <h6 class="mb-0">{{ opd_credit_limit }} LKR</h6>
+                    </div>
+                    
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center p-4 h-100">
+                        <i class="fa fa-hospital fa-3x text-primary mb-3"></i>
+                        <p class="mb-1 fw-bold">OPD Credit Balance</p>
+                        <h6 class="mb-0">{{ opd_credit_balance }} LKR</h6>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center p-4 h-100">
+                        <i class="fa fa-gas-pump fa-3x text-primary mb-3"></i>
+                        <p class="mb-1 fw-bold">Fuel Credit Limit</p>
+                        <h6 class="mb-0">{{ fuel_credit_limit }} LKR</h6>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center p-4 h-100">
+                        <i class="fa fa-oil-can fa-3x text-primary mb-3"></i>
+                        <p class="mb-1 fw-bold">Fuel Credit Balance</p>
+                        <h6 class="mb-0">{{ fuel_credit_balance }} LKR</h6>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container-fluid pt-4 px-4">
+
+            <div class="bg-light text-center rounded p-4">
+
+                <div class="d-flex align-items-center justify-content-center mb-4">
+                    <h4>Recent Claim Requests</h4>
+                </div>
+
+                <div class="table-responsive">
+
+                    <script>
+                        const claimDetails = JSON.parse('{{ claim_details_dict | tojson | safe }}');
+                    </script>
+
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col">Claim ID</th>
+                                <th scope="col">Date Of Request</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Amount (LKR)</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for claim in claims %}
+                            <tr>
+                                <td>{{ claim[0] }}</td> <!-- Claim ID -->
+                                <td>{{ claim[1].strftime('%d-%m-%Y') }}</td> <!-- Date of Request -->
+                                <td>{{ claim[2] }}</td> <!-- Category -->
+                                <td>{{ claim[3] }}</td> <!-- Amount -->
+                                <td> <!-- Status -->
+                                    <span class="{% if claim[4] == 'Approved' %}text-success{% elif claim[4] == 'Rejected' %}text-danger{% else %}text-muted{% endif %}">
+                                        {{ claim[4] }}
+                                    </span>
+                                    <div>
+                                        {% if claim[4] == 'Pending' %}
+                                        <button type="button" class="btn btn-sm custom-edit-btn text-white mt-2" onclick="openEditModal('{{ claim[0] }}')">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </button>
+                                        <button type="button" class="btn btn-sm custom-delete-btn text-white mt-2" onclick="deleteClaim('{{ claim[0] }}')">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>                                            
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-primary mt-2" onclick="showMoreDetails('{{ claim[0] }}')">
+                                                More Details
+                                            </button>
+                                        {% endif %}
+                                    </div>                                        
+                                </td>                                    
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Content End -->
+
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="../static/js/main.js"></script>
+<script src="../static/js/employee.js"></script>
+
+<script>
+    function showMoreDetails(claim_id)
+    {
+        const claim = claimDetails[claim_id];
+        const modal = new bootstrap.Modal(document.getElementById('moreDetailsModal'));
+        const carouselInner = document.getElementById('carouselImages');
+        const claimInfo = document.getElementById('claimInfo');
+
+        // clear existing content
+        carouselInner.innerHTML = '';
+        claimInfo.innerHTML = '';
+
+        // check if claim details exist
+        if (claim)
+        {
+            // populate the claim details in a table format
+            claimInfo.innerHTML = `
+                <table class="table table-bordered table-striped table-hover table-sm">
+                    <tbody>
+                        <tr>
+                            <td>Claim ID</td>
+                            <td>${claim.ClaimID}</td>
+                        </tr>
+                        <tr>
+                            <td>Employee Name</td>
+                            <td>${claim.Employee.FirstName} ${claim.Employee.LastName}</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Request</td>
+                            <td>${claim.DateOfRequest}</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>${claim.Category}</td>
+                        </tr>
+                        <tr>
+                            <td>Amount</td>
+                            <td>${claim.Amount}</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>${claim.Status}</td>
+                        </tr>
+                        <tr>
+                            <td>Employee Message</td>
+                            <td>${claim.EmpMessage}</td>
+                        </tr>
+                        <tr>
+                            <td>Admin Name</td>
+                            <td>${claim.Admin.FirstName} ${claim.Admin.LastName}</td>
+                        </tr>
+                        <tr>
+                            <td>Admin Email</td>
+                            <td>${claim.Admin.Email}</td>
+                        </tr>
+                        <tr>
+                            <td>Admin TP No</td>
+                            <td>${claim.Admin.TpNo}</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Decision</td>
+                            <td>${claim.Approval.DateOfApproval}</td>
+                        </tr>
+                        <tr>
+                            <td>Admin Message</td>
+                            <td>${claim.Approval.AdminMessage}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            `;
+
+            // populate carousel with images (if any)
+            const claimImages = claim.Images || [];
+            if (claimImages.length > 0) {
+                claimImages.forEach((imgUrl, index) =>
+                {
+                    const isActive = index === 0 ? 'active' : '';
+                    console.log(imgUrl);
+                    carouselInner.innerHTML += `
+                        <div class="carousel-item ${isActive}">
+                            <img src="/uploads/${imgUrl}" class="d-block w-100" alt="Claim Image" style="border: 1px solid black;">
+                        </div>
+                    `;
+                });
+            }
+            else
+            {
+                carouselInner.innerHTML = `
+                    <div class="carousel-item active">
+                        <p class="text-center">No images available for this claim.</p>
+                    </div>
+                `;
+            }
+
+            // show the modal
+            modal.show();
+        }
+        else
+        {
+                showPopup('Claim details not found.');
+        }
+    }
+
+
+    // Function to delete claim request
+    function deleteClaim(claimId)
+    {
+        // Show custom confirmation modal instead of browser confirm
+        showDeleteConfirmation(claimId);
+    }
+
+    // Custom confirmation dialog function
+    function showDeleteConfirmation(claimId) {
+        // Set the claim ID for the confirmation
+        document.getElementById('confirmDeleteClaimId').value = claimId;
+        
+        // Show the custom confirmation modal
+        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        modal.show();
+    }
+
+    // Function to execute the actual deletion
+    function executeDelete() {
+        const claimId = document.getElementById('confirmDeleteClaimId').value;
+        
+        // Hide the confirmation modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
+        modal.hide();
+        
+        // Proceed with the deletion
+        fetch(`/delete_claim/${claimId}`,
+        {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(response =>
+        {
+            if (!response.ok)
+            {
+                showPopup("An error occurred while deleting the claim.");
+            }
+            return response.json();
+        })
+        .then(data =>
+        {
+            if (data.error)
+            {
+                showPopup(data.error);
+            }
+            else
+            {
+                actionSuccess("Claim request deleted successfully.");
+                setTimeout(() => window.location.reload(), 3000);
+            }
+        })
+        .catch(error =>
+        {
+            showPopup(error.message);
+        });
+    }
+
+
+    // Edit Claim Details
+    function openEditModal(claimId) {
+        window.currentClaimId = claimId;
+        // fetch claim details from the server
+        fetch(`/get_claim_details/${claimId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Error fetching claim details: " + data.error);
+                    return;
+                }
+
+                // populate the modal with fetched data
+                document.getElementById('amount').value = data.amount;
+                document.getElementById('empMessage').value = data.empMessage;
+                document.getElementById('category').value = data.category;
+                document.getElementById('claimId').value = claimId;
+
+                // populate carousel with images (if any)
+                const claimImages = data.images || [];
+                const carouselInner = document.getElementById('editCarouselImages');
+                carouselInner.innerHTML = ""; // Clear previous content
+
+                if (claimImages.length > 0) {
+                    claimImages.forEach((imgUrl, index) => {
+                        const isActive = index === 0 ? 'active' : '';
+                        carouselInner.innerHTML += `
+                            <div class="carousel-item ${isActive}">
+                                <img src="/uploads/${imgUrl}" class="d-block w-100" alt="Invoice Image" style="border: 1px solid black;">
+                            </div>
+                        `;
+                    });
+                } else {
+                    carouselInner.innerHTML = `
+                        <div class="carousel-item active">
+                            <p class="text-center">No images available for this claim.</p>
+                        </div>
+                    `;
+                }
+
+                // show the modal
+                const modal = new bootstrap.Modal(document.getElementById('editClaimModal'));
+                modal.show();
+            })
+            .catch(error => {
+                alert("Error: " + error.message);
+            });
+    }
+
+
+        function editClaim() {
+        // Show custom confirmation modal instead of direct submission
+        showUpdateConfirmation();
+    }
+
+    // Custom update confirmation dialog function
+    function showUpdateConfirmation() {
+        // Hide the edit modal first
+        const editModal = bootstrap.Modal.getInstance(document.getElementById('editClaimModal'));
+        if (editModal) {
+            editModal.hide();
+        }
+        
+        // Show the custom confirmation modal
+        const modal = new bootstrap.Modal(document.getElementById('updateConfirmationModal'));
+        modal.show();
+    }
+
+    // Function to execute the actual update
+    function executeUpdate() {
+        // Hide the confirmation modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('updateConfirmationModal'));
+        modal.hide();
+        
+        // Proceed with the update
+        const form = document.getElementById('editClaimForm');
+        
+        const claimId = document.getElementById('claimId').value;
+        const amount = document.getElementById('amount').value;
+        const empMessage = document.getElementById('empMessage').value;
+        const category = document.getElementById('category').value;
+
+        if (!form.checkValidity()) {
+        form.reportValidity();  // This will trigger the browser's validation UI and highlight invalid fields
+        return;
+        }
+
+        const formData = new FormData();
+        formData.append('amount', amount);
+        formData.append('empMessage', empMessage);
+        formData.append('category', category);
+
+        fetch(`/update_claim/${claimId}`, {  // Added claimId to the URL
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                 const modal = bootstrap.Modal.getInstance(document.getElementById('editClaimModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                actionSuccess(data.success);
+                setTimeout(() => window.location.reload(), 3000);
+            } else {
+                showPopup(data.error);
+            }
+        })
+        .catch(error => {
+            showPopup(data.error);
+        });
+    }
+
+    function confirmUpdate()
+    {
+        // Confirm the update and submit the form
+        if (confirm('Are you sure you want to update this claim?'))
+        {
+            document.getElementById('editClaimForm').submit();
+        }
+    }
+
+    // Popup messages for errors
+    function showPopup(message) {
+        let popup = document.createElement("div");
+        popup.classList.add("popup-message");
+        popup.textContent = message;
+
+        document.body.appendChild(popup);
+
+        setTimeout(() => {
+            popup.remove();
+        }, 5000);
+    }
+
+    // Popup messages for success
+    function actionSuccess(message) {
+        let popup = document.createElement("div");
+        popup.classList.add("popup-message-success");
+        popup.textContent = message;
+
+        document.body.appendChild(popup);
+
+        setTimeout(() => {
+            popup.remove();
+        }, 5000);
+    }
+
+    
+</script>
+
+<!-- Custom Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationLabel">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Delete Confirmation
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="confirmDeleteClaimId" />
+                <p class="mb-3">Are you sure you want to delete this claim request?</p>
+                <p class="mb-0 text-danger small"><strong>This action cannot be undone.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="executeDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Update Confirmation Modal -->
+<div class="modal fade" id="updateConfirmationModal" tabindex="-1" aria-labelledby="updateConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateConfirmationLabel">
+                    <i class="fas fa-edit text-warning me-2"></i>
+                    Update Confirmation
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Are you sure you want to update this claim request?</p>
+                <p class="mb-0 text-muted small">Please review your changes before confirming.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="executeUpdate()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<!-- Modal for More Details -->
+<div class="modal fade" id="moreDetailsModal" tabindex="-1" aria-labelledby="moreDetailsLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="moreDetailsLabel" style="text-align: center; width: 100%;">Claim Request Details</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- Claim Details Section -->
+                <div id="claimInfo"></div>
+
+                <!-- Carousel for Claim Images -->
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+
+                    <div class="carousel-inner" id="carouselImages"></div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Edit Claim Modal -->
+<div class="modal fade" id="editClaimModal" tabindex="-1" aria-labelledby="editClaimModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="moreDetailsLabel" style="text-align: center; width: 100%;">Edit Claim Request</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editClaimForm" method="POST">
+                    <input type="hidden" id="claimId" name="claimId">
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="category" name="category" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01" required>
+                    </div>                    
+
+                    <div class="mb-3">
+                        <label for="empMessage" class="form-label">Employee Message</label>
+                        <textarea class="form-control" id="empMessage" name="empMessage"></textarea>
+                    </div>
+
+                    <!-- Carousel for Claim Images -->
+                    <div class="mb-3">
+                        <label class="form-label">Claim Images</label>
+                        <div id="editCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" id="editCarouselImages"></div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#editCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#editCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <button type="button" class="btn btn-primary" onclick="editClaim()">Confirm Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: black !important;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        color: black !important;
+    }
+
+    .custom-edit-btn {
+        background-color: #d18e32; 
+        border-color: #d18e32;
+    }
+
+    .custom-delete-btn {
+        background-color: #cd4132; 
+        border-color: #cd4132;
+    }
+
+    .custom-edit-btn:hover, .custom-delete-btn:hover {
+        opacity: 0.85; /* Slight hover effect for interactivity */
+    }
+
+    .popup-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #DC143C;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: fadein 0.3s;
+    }
+    .popup-message-success {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #078117;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: fadein 0.3s;
+    }
+
+    @keyframes fadein {
+        from { opacity: 0; top: 10px; }
+        to { opacity: 1; top: 20px; }
+    }
+
+    @keyframes fadeout {
+        from { opacity: 1; top: 20px; }
+        to { opacity: 0; top: 10px; }
+    }
+</style>
+</body>
+</html>
