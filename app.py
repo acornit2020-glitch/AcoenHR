@@ -139,6 +139,34 @@ def logout():
 
 
 
+""""Change Password Function"""
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    if 'emp_id' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+
+    data = request.get_json()
+    current_password = data.get('currentPassword')
+    new_password = data.get('newPassword')
+    emp_id = session['emp_id']
+
+    # Verify current password
+    query = "SELECT Password FROM employee WHERE EmpID = %s"
+    result = db.fetch_data(query, (emp_id,))
+    if not result or result[0][0] != current_password:
+        return jsonify({'error': 'Current password is incorrect'})
+
+    # Update password
+    query = "UPDATE employee SET Password = %s WHERE EmpID = %s"
+    db.execute_query(query, (new_password, emp_id))
+    
+    return jsonify({'success': True, 'message': 'Password updated successfully!'})
+
+
+
+
+
 """ Employee Dashboard Function"""
 
 @app.route('/emp_dashboard', methods=['GET', 'POST'])
