@@ -14,8 +14,7 @@ import imagehash
 try:
     import pandas as pd
 except ImportError as e:
-    print(f"Warning: pandas import failed: {e}")
-    print("Excel export functionality may not work properly.")
+    
     pd = None
 from io import BytesIO
 from dotenv import load_dotenv
@@ -47,10 +46,10 @@ db = DBConnection(
     port=int(os.getenv("DB_PORT", "3306"))
 )
 
-print('\n')
+
 try:
     db.connect()
-    print("\n\033[0;34m" + app.name, "is running\033[0m")
+    
 except Exception as e:
     print(f"\n\033[0;31mDatabase connection failed: {e}\033[0m")
     print("Please check your database configuration and environment variables.")
@@ -92,29 +91,28 @@ def uploaded_file(filename):
 
 @app.route('/')
 def login():
-    print("\n\033[0;35m__LogIn__\n")
+    
     return render_template('login.html')
 
 @app.route('/signin', methods=['POST'])
 def signin():
-    print("\n\033[0;35m__SignIn__\n")
+    
     email = request.form['email']
     password = request.form['password']
 
-    print(f"User input password: {password}")
+    
 
     # admin-access
     query = "SELECT * FROM admin WHERE Email = %s"
     admin_check = db.fetch_data(query, (email,))
     if admin_check:
         stored_hash = admin_check[0][2]  # assuming Password is 3rd column
-        print(f"Database hashed password: {stored_hash}")
-        print(f"Hashed password after input: {bcrypt.hash(password)}")
+        
         
         if bcrypt.verify(password, stored_hash):
             session['admin_id'] = admin_check[0][0]
             session['admin_name'] = admin_check[0][3] + " " + admin_check[0][4]
-            print(f"Hashed password after input: {bcrypt.hash(password)}")
+            
             return jsonify({'success': True, 'redirect': url_for('dashboard')})
         else:
             return jsonify({'success': False, 'error': "Password is incorrect. Try again."})
@@ -124,12 +122,12 @@ def signin():
     user_check = db.fetch_data(query, (email,))
     if user_check:
         stored_hash = user_check[0][2]  # assuming Password is 3rd column
-        print(f"Database hashed password: {stored_hash}")
+        
         
         if bcrypt.verify(password, stored_hash):
             session['emp_id'] = user_check[0][0]
             session['emp_name'] = user_check[0][3] + " " + user_check[0][4]
-            print(f"Hashed password after input: {bcrypt.hash(password)}")
+            
             return jsonify({'success': True, 'redirect': url_for('emp_dashboard')})
         else:
             return jsonify({'success': False, 'error': "Password is incorrect. Try again."})
@@ -165,8 +163,7 @@ def change_password():
     result = db.fetch_data(query, (emp_id,))
     stored_hash = result[0][0]
     
-    print(f"User input current password: {current_password}")
-    print(f"Database hashed password: {stored_hash}")
+    
     
     if not result or not bcrypt.verify(current_password, stored_hash):
         return jsonify({'error': 'Current password is incorrect. Try again.'})
@@ -176,7 +173,7 @@ def change_password():
     query = "UPDATE employee SET Password = %s WHERE EmpID = %s"
     db.execute_query(query, (new_hashed, emp_id))
     
-    print(f"Hashed new password after input: {new_hashed}")
+    
     
     return jsonify({'success': True, 'message': 'Password updated successfully!'})
 
@@ -213,7 +210,7 @@ def change_admin_password():
 
 @app.route('/emp_dashboard', methods=['GET', 'POST'])
 def emp_dashboard():
-    print("\n\033[0;35m__Employee Dashboard__\n")
+    
 
     try:
         emp_id = session.get('emp_id')
@@ -321,7 +318,7 @@ def emp_dashboard():
 
 @app.route('/delete_claim/<int:claim_id>', methods=['DELETE'])
 def delete_claim(claim_id):
-    print("\n\033[0;31m__Delete Claim Request__\n")
+    
 
     try:
         emp_id = session.get('emp_id')
@@ -497,7 +494,7 @@ def update_claim(claim_id):
 
 @app.route('/emp_form', methods=['GET', 'POST'])
 def emp_form():
-    print("\n\033[0;35m__Claim Request__\n")
+    
     
     try:
         emp_name = session.get('emp_name')
@@ -633,7 +630,7 @@ def get_fast_image_hash(image):
         small_image = image.resize((8, 8), Image.LANCZOS)
         return str(imagehash.phash(small_image))
     except Exception as e:
-        print(f"Hash generation failed: {e}")
+       
         return None
 
 
@@ -866,7 +863,7 @@ def employee_count():
 @app.route('/claim_requests', methods=['GET', 'POST'])
 def claim_requests():
     
-    print("\n\033[0;35m__Untracked Claim Requests__\n")
+    
 
     try: 
         admin_name = session.get('admin_name')
@@ -957,7 +954,7 @@ def claim_requests():
 @app.route('/update_status', methods=['POST'])
 def update_status():
 
-    print("\n\033[0;35m__Update Claim Request__\n")
+    
 
     # get form data
     claim_id = request.form['claim_id']
@@ -1019,7 +1016,7 @@ def update_status():
 
 @app.route('/recent_requests', methods=['GET', 'POST'])
 def recent_requests():
-    print("\n\033[0;35m__Recent Claim Requests__\n")
+    
 
     try:
         admin_name = session.get('admin_name')
@@ -1216,7 +1213,7 @@ def recent_requests():
 @app.route('/admin_form', methods=['GET', 'POST'])
 def admin_form():
 
-    print("\n\033[0;35m__Create Employee__\n")
+    
     try: 
         admin_name = session.get('admin_name')
     except Exception as e:
@@ -1228,8 +1225,7 @@ def admin_form():
         email = request.form['email']
         password = request.form['password']
         hashed_password = bcrypt.hash(password)
-        print(f"User input password: {password}")
-        print(f"Hashed password to store: {hashed_password}")
+        
 
         first_name = request.form['first_name']
         last_name = request.form['last_name']
@@ -1271,7 +1267,7 @@ def admin_form():
 @app.route('/emp_details', methods=['GET', 'POST'])
 def emp_details():
 
-    print("\n\033[0;35m__Employee Details__\n")
+    
     admin_name = session.get('admin_name')
 
     if request.method == 'GET':
@@ -1308,7 +1304,7 @@ def emp_details():
 """ Employee Update Function"""
 @app.route('/emp_update', methods=['GET', 'POST'])
 def emp_update():
-    print("\n\033[0;35m__Update Employee__\n")
+    
     admin_name = session.get('admin_name')
 
     if request.method == 'GET':
@@ -1357,7 +1353,7 @@ def emp_update():
 
 @app.route('/generate_report', methods=['GET', 'POST'])
 def generate_report():
-    print("\n\033[0;35m__Generate Report__\n")
+    
     admin_name = session.get('admin_name')
 
     employee = db.fetch_data("SELECT EmpID, FirstName, LastName FROM employee")  # Fetch employees
@@ -1379,12 +1375,7 @@ def generate_report():
                 # Fallback to dropdown selection if text input is empty
                 employee_id = request.form.get('employee_id')
         
-        # Debug logging
-        print(f"Debug: report_type = {report_type}")
-        print(f"Debug: employee_id_input = {request.form.get('employee_id_input', '')}")
-        print(f"Debug: employee_id (dropdown) = {request.form.get('employee_id', '')}")
-        print(f"Debug: final employee_id = {employee_id}")
-        print(f"Debug: form data = {dict(request.form)}")
+        
 
         # Construct SQL queries dynamically
         query_conditions = "WHERE Status = 'Approved' AND DateOfRequest BETWEEN %s AND %s"
@@ -1408,12 +1399,12 @@ def generate_report():
                     employee_name = f"{emp_result[0][1]} {emp_result[0][2]}"
                 else:
                     # Employee ID not found, set error message or handle appropriately
-                    print(f"Warning: Employee ID {employee_id} not found in database")
+                    
                     employee_name = f"Employee ID {employee_id} (Not Found)"
                     employee_display_id = employee_id
             except (ValueError, TypeError):
                 # Invalid employee ID format
-                print(f"Warning: Invalid employee ID format: {employee_id}")
+                
                 employee_name = f"Invalid Employee ID: {employee_id}"
                 employee_display_id = employee_id
                 # Don't add to query conditions if invalid
@@ -1644,7 +1635,7 @@ def download_excel():
 
 @app.route('/stationary', methods=['GET', 'POST'])
 def stationary():
-    print("\n\033[0;35m__stationary Dashboard__\n")
+    
     today_date = date.today()
     admin_name = session.get('admin_name')
 
