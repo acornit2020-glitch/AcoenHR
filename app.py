@@ -19,6 +19,8 @@ except ImportError as e:
     pd = None
 from io import BytesIO
 from dotenv import load_dotenv
+from passlib.hash import bcrypt
+
 
 # Configure logging for production
 if os.getenv("FLASK_ENV") == "production":
@@ -99,34 +101,41 @@ def signin():
     email = request.form['email']
     password = request.form['password']
 
+    print(f"User input password: {password}")
+
     # admin-access
     query = "SELECT * FROM admin WHERE Email = %s"
     admin_check = db.fetch_data(query, (email,))
     if admin_check:
-        query = "SELECT * FROM admin WHERE Email = %s AND Password = %s"
-        admin = db.fetch_data(query, (email, password))
-        if admin:
-            session['admin_id'] = admin[0][0]
-            session['admin_name'] = admin[0][3] + " " + admin[0][4]
+        stored_hash = admin_check[0][2]  # assuming Password is 3rd column
+        print(f"Database hashed password: {stored_hash}")
+        print(f"Hashed password after input: {bcrypt.hash(password)}")
+        
+        if bcrypt.verify(password, stored_hash):
+            session['admin_id'] = admin_check[0][0]
+            session['admin_name'] = admin_check[0][3] + " " + admin_check[0][4]
+            print(f"Hashed password after input: {bcrypt.hash(password)}")
             return jsonify({'success': True, 'redirect': url_for('dashboard')})
         else:
-            return jsonify({'success': False, 'error': "Password is incorrect"})
+            return jsonify({'success': False, 'error': "Password is incorrect. Try again."})
 
     # employee-access
     query = "SELECT * FROM employee WHERE Email = %s"
     user_check = db.fetch_data(query, (email,))
     if user_check:
-        query = "SELECT * FROM employee WHERE Email = %s AND Password = %s"
-        user = db.fetch_data(query, (email, password))
-        if user:
-            session['emp_id'] = user[0][0]
-            session['emp_name'] = user[0][3] + " " + user[0][4]
+        stored_hash = user_check[0][2]  # assuming Password is 3rd column
+        print(f"Database hashed password: {stored_hash}")
+        
+        if bcrypt.verify(password, stored_hash):
+            session['emp_id'] = user_check[0][0]
+            session['emp_name'] = user_check[0][3] + " " + user_check[0][4]
+            print(f"Hashed password after input: {bcrypt.hash(password)}")
             return jsonify({'success': True, 'redirect': url_for('emp_dashboard')})
         else:
-            return jsonify({'success': False, 'error': "Password is incorrect"})
+            return jsonify({'success': False, 'error': "Password is incorrect. Try again."})
 
-    # user does not exist
     return jsonify({'success': False, 'error': "Your account is not registered. Please contact Acorn HR for assistance."})
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -139,7 +148,7 @@ def logout():
 
 
 
-""""Change Password Function"""
+""""Change employee Password Function"""
 
 @app.route('/change_password', methods=['POST'])
 def change_password():
@@ -151,19 +160,52 @@ def change_password():
     new_password = data.get('newPassword')
     emp_id = session['emp_id']
 
-    # Verify current password
+    # Fetch hashed password from DB
     query = "SELECT Password FROM employee WHERE EmpID = %s"
     result = db.fetch_data(query, (emp_id,))
-    if not result or result[0][0] != current_password:
-        return jsonify({'error': 'Current password is incorrect'})
+    stored_hash = result[0][0]
+    
+    print(f"User input current password: {current_password}")
+    print(f"Database hashed password: {stored_hash}")
+    
+    if not result or not bcrypt.verify(current_password, stored_hash):
+        return jsonify({'error': 'Current password is incorrect. Try again.'})
 
-    # Update password
+    # Hash the new password and update
+    new_hashed = bcrypt.hash(new_password)
     query = "UPDATE employee SET Password = %s WHERE EmpID = %s"
-    db.execute_query(query, (new_password, emp_id))
+    db.execute_query(query, (new_hashed, emp_id))
+    
+    print(f"Hashed new password after input: {new_hashed}")
     
     return jsonify({'success': True, 'message': 'Password updated successfully!'})
 
+""""Change admin Password Function"""
 
+@app.route('/change_admin_password', methods=['POST'])
+def change_admin_password():
+    if 'admin_id' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+
+    data = request.get_json()
+    current_password = data.get('currentPassword')
+    new_password = data.get('newPassword')
+    admin_id = session['admin_id']
+
+    # Fetch hashed password from DB
+    query = "SELECT Password FROM admin WHERE AdminID = %s"
+    result = db.fetch_data(query, (admin_id,))
+    stored_hash = result[0][0]
+
+    if not result or not bcrypt.verify(current_password, stored_hash):
+        return jsonify({'error': 'Current password is incorrect. Try again.'})
+
+    # Hash the new password and update
+    new_hashed = bcrypt.hash(new_password)
+    query = "UPDATE admin SET Password = %s WHERE AdminID = %s"
+    db.execute_query(query, (new_hashed, admin_id))
+
+    return jsonify({'success': True, 'message': 'Password updated successfully!'})
 
 
 
@@ -1185,6 +1227,10 @@ def admin_form():
         # get form data
         email = request.form['email']
         password = request.form['password']
+        hashed_password = bcrypt.hash(password)
+        print(f"User input password: {password}")
+        print(f"Hashed password to store: {hashed_password}")
+
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         nic = request.form['nic']
@@ -1196,20 +1242,17 @@ def admin_form():
         fuel_credit_limit = request.form['fuel_credit_limit']
 
         # insert the new employee data into the Employee table
-        query = f"""
+        query = """
             INSERT INTO employee (Email, Password, FirstName, LastName, NIC, DOB, Gender, SBU, TpNo)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        db.execute_query(query, (email, password, first_name, last_name, nic, dob, gender, sbu, telephone))
+        db.execute_query(query, (email, hashed_password, first_name, last_name, nic, dob, gender, sbu, telephone))
 
-        max_emp_query = f"""
-            SELECT MAX(EmpID)
-            FROM employee
-        """
+        max_emp_query = "SELECT MAX(EmpID) FROM employee"
         max_emp_id = db.fetch_data(max_emp_query)[0][0]
 
         # insert the new employee data into the Credit table
-        credit_limit_query= f"""
+        credit_limit_query = """
             INSERT INTO credit (EmpID, FuelCreditLimit, OPDCreditLimit, FuelCreditBalance, OPDCreditBalance)
             VALUES (%s, %s, %s, %s, %s)
         """
@@ -1220,6 +1263,7 @@ def admin_form():
 
     # render the form on GET request
     return render_template('admin_form.html', admin_name=admin_name)
+
 
 
 """ Update Emplyee Credit Limits Function"""

@@ -72,6 +72,40 @@
     </style>
 </head>
 
+<!-- Admin Change Password Modal -->
+<div class="modal fade" id="adminChangePasswordModal" tabindex="-1" aria-labelledby="adminChangePasswordLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminChangePasswordLabel"><i class="fa fa-lock me-2"></i>Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="adminChangePasswordForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="adminCurrentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="adminCurrentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adminNewPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="adminNewPassword" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adminConfirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="adminConfirmPassword" name="confirmPassword" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
         <!-- Sidebar Start -->
@@ -98,6 +132,11 @@
                     <a href="/emp_details" class="nav-item nav-link"><i class="fa fa-id-card me-2"></i>Edit Credits</a>
                     <a href="/emp_update" class="nav-item nav-link"><i class="fa fa-user-edit me-2"></i>Update Employee</a>
                     <a href="/generate_report" class="nav-item nav-link"><i class="fa fa-file-alt me-2"></i>Generate Reports</a>
+                    <a href="javascript:void(0)" class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#adminChangePasswordModal">
+                        <i class="fa fa-lock me-2"></i>Change Password
+                    </a>
+
+                    
                 </div>
                 <!-- Logout Button at the Bottom -->
                 <div class="navbar-nav w-100 mt-auto">
@@ -245,6 +284,7 @@
     </div>
 
     <!-- JavaScript for Charts -->
+    
     <script>
         // Claims Breakdown Chart
         const claimsBreakdownCtx = document.getElementById('claimsBreakdownChart').getContext('2d');
@@ -308,6 +348,7 @@
 
     <!-- Bootstrap JavaScript -->
     <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/password_change.js"></script>
 </body>
 
 </html>
