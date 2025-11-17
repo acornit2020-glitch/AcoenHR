@@ -261,7 +261,7 @@ def emp_dashboard():
             employee ON claim.EmpID = employee.EmpID
         JOIN 
             claimimage ON claim.ClaimID = claimimage.ClaimID
-        JOIN
+        LEFT JOIN 
             claimapproval ON claim.ClaimID = claimapproval.ClaimID
         JOIN
             admin ON claimapproval.AdminID = admin.AdminID
@@ -863,8 +863,6 @@ def employee_count():
 @app.route('/claim_requests', methods=['GET', 'POST'])
 def claim_requests():
     
-    
-
     try: 
         admin_name = session.get('admin_name')
     except Exception as e:
@@ -1017,7 +1015,6 @@ def update_status():
 @app.route('/recent_requests', methods=['GET', 'POST'])
 def recent_requests():
     
-
     try:
         admin_name = session.get('admin_name')
     except Exception as e:
@@ -1146,9 +1143,9 @@ def recent_requests():
             claim
         JOIN 
             employee ON claim.EmpID = employee.EmpID
-        JOIN 
+        LEFT JOIN 
             claimimage ON claim.ClaimID = claimimage.ClaimID
-        JOIN
+        LEFT JOIN 
             claimapproval ON claim.ClaimID = claimapproval.ClaimID
         JOIN
             admin ON claimapproval.AdminID = admin.AdminID
